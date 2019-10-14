@@ -31,13 +31,13 @@ func main() {
 	db.Find(&tweets)
 	fmt.Println(len(tweets))
 
-	tx := db.Begin()
 	for _, tweetInDb := range tweets {
 		id, err := strconv.ParseInt(tweetInDb.TwitterID, 10, 64)
 		if err != nil {
 			panic(err)
 		}
 		tweetNew, err := twitterApi.GetTweet(id, url.Values{})
+		tx := db.Begin()
 		if err != nil {
 			fmt.Println(tweetInDb.Tweet)
 			fmt.Println(err)
@@ -45,7 +45,7 @@ func main() {
 		} else {
 			db.Model(&tweetInDb).Updates(Tweet{Tweet: tweetNew.FullText})
 		}
+		tx.Commit()
 	}
-	tx.Commit()
 
 }
