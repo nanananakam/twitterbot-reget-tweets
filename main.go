@@ -41,7 +41,7 @@ func main() {
 		if err != nil {
 			fmt.Println(tweetInDb.Tweet)
 			fmt.Println(err)
-			db.Delete(&tweetInDb)
+			db.Delete(Tweet{},"twitter_id = ?",tweetInDb.TwitterID)
 		} else {
 			db.Model(&tweetInDb).Updates(Tweet{Tweet: tweetNew.FullText})
 		}
